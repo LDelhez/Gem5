@@ -116,7 +116,7 @@ void
 LTAGE::specLoopUpdate(Addr pc, bool taken, LTageBranchInfo* bi)
 {
     if (bi->loopHit>=0) {
-        int index = lindex(pc);
+        int index = bi->loopHit + bi->loopIndex;
         if (taken != ltable[index].dir) {
             ltable[index].currentIterSpec = 0;
         } else {
