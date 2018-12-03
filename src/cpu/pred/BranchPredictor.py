@@ -52,7 +52,11 @@ class BranchPredictor(SimObject):
     indirectPathLength = Param.Unsigned(3,
         "Previous indirect targets to use for path history")
 
-
+class StatisticallyCorrectableBranchPredictor(BranchPredictor):
+    type = 'StatisticallyCorrectableBranchPredictor'
+    cxx_class = 'StatisticallyCorrectableBPredUnit'
+    cxx_header = "cpu/pred/statistical_corrector.hh"
+    abstract = True
 
 class LocalBP(BranchPredictor):
     type = 'LocalBP'
@@ -89,7 +93,7 @@ class BiModeBP(BranchPredictor):
 
 # TAGE branch predictor as described in https://www.jilp.org/vol8/v8paper1.pdf
 # The default sizes below are for the 8C-TAGE configuration (63.5 Kbits)
-class TAGE(BranchPredictor):
+class TAGE(StatisticallyCorrectableBranchPredictor):
     type = 'TAGE'
     cxx_class = 'TAGE'
     cxx_header = "cpu/pred/tage.hh"
@@ -143,3 +147,18 @@ class LTAGE(TAGE):
     loopTableIterBits = Param.Unsigned(14, "Nuber of iteration bits per loop")
     logLoopTableAssoc = Param.Unsigned(2, "Log loop predictor associativity")
 
+
+class StatisticalCorrector(BranchPredictor):
+    type = 'StatisticalCorrector'
+    cxx_class = 'StatisticalCorrector'
+    cxx_header = "cpu/pred/statistical_corrector.hh"
+
+    logSize = Param.Unsigned(12, "Log size of the corrector")
+    numTables = Param.Unsigned(5, "Number of tables")
+    tableEntryBits = Param.Unsigned(5, "Number of bits per entry")
+
+    basePredictor = Param.StatisticallyCorrectableBranchPredictor(
+        TAGE(), "Base predictor")
+
+class STAGE(StatisticalCorrector):
+    pass

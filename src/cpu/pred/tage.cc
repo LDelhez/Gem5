@@ -48,7 +48,7 @@
 #include "debug/Tage.hh"
 
 TAGE::TAGE(const TAGEParams *params)
-  : BPredUnit(params),
+  : StatisticallyCorrectableBPredUnit(params),
     logRatioBiModalHystEntries(params->logRatioBiModalHystEntries),
     nHistoryTables(params->nHistoryTables),
     tagTableCounterBits(params->tagTableCounterBits),
@@ -723,4 +723,29 @@ TAGE*
 TAGEParams::create()
 {
     return new TAGE(this);
+}
+
+bool
+TAGE::enableStatisticalCorrector(ThreadID tid, const void* bp_history) const
+{
+    TageBranchInfo* bi = (TageBranchInfo*) bp_history;
+    return bi->hitBank >= 1 && bi->condBranch;
+}
+
+int
+TAGE::confidence(ThreadID tid, const void* bp_history) const
+{
+    TageBranchInfo* bi = (TageBranchInfo*) bp_history;
+    assert(bi->hitBank > 0 && bi->hitBankIndex >= 0);
+
+    return gtable[bi->hitBank][bi->hitBankIndex].ctr;
+}
+
+int
+TAGE::statHash(ThreadID tid, int i, const void *bp_history) const
+{
+    TageBranchInfo* bi = (TageBranchInfo*) bp_history;
+    if (i > 0)
+        return (gindex(tid, bi->branchPC, i) << 3) ^ ((bi->branchPC ^ i) & 7);
+    return bindex(bi->branchPC);
 }

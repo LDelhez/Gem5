@@ -54,10 +54,12 @@
 #include <vector>
 
 #include "base/types.hh"
-#include "cpu/pred/bpred_unit.hh"
+#include "cpu/pred/sat_counter.hh"
+#include "cpu/pred/statistical_corrector.hh"
 #include "params/TAGE.hh"
 
-class TAGE: public BPredUnit
+
+class TAGE: public StatisticallyCorrectableBPredUnit
 {
   public:
     TAGE(const TAGEParams *params);
@@ -70,6 +72,13 @@ class TAGE: public BPredUnit
                 bool squashed) override;
     virtual void squash(ThreadID tid, void *bp_history) override;
     unsigned getGHR(ThreadID tid, void *bp_history) const override;
+
+    virtual bool enableStatisticalCorrector(ThreadID tid,
+        const void* bp_history) const override;
+    virtual int confidence(ThreadID tid,
+        const void* bp_history) const override;
+    virtual int statHash(ThreadID tid, int i, const void* bp_history)
+        const override;
 
     virtual void regStats() override;
 
