@@ -5,18 +5,6 @@
 #include "cpu/pred/bpred_unit.hh"
 #include "params/StatisticalCorrector.hh"
 
-class StatisticallyCorrectableBPredUnit : public BPredUnit
-{
-public:
-    StatisticallyCorrectableBPredUnit(const Params* params)
-        : BPredUnit(params) {}
-    virtual bool enableStatisticalCorrector(ThreadID tid,
-        const void* bp_history) const { return true; }
-    virtual int confidence(ThreadID tid, const void* bp_history) const = 0;
-    virtual int statHash(ThreadID tid, int i, const void* bp_history) const
-        = 0;
-};
-
 class StatisticalCorrector : public BPredUnit
 {
 public:
@@ -36,7 +24,7 @@ public:
 
 private:
 
-    StatisticallyCorrectableBPredUnit* basePredictor;
+    BPredUnit* basePredictor;
 
     const uint8_t logSize = 12;
     const uint8_t nTables = 5;

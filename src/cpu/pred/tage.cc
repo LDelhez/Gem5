@@ -48,7 +48,7 @@
 #include "debug/Tage.hh"
 
 TAGE::TAGE(const TAGEParams *params)
-  : StatisticallyCorrectableBPredUnit(params),
+  : BPredUnit(params),
     logRatioBiModalHystEntries(params->logRatioBiModalHystEntries),
     nHistoryTables(params->nHistoryTables),
     tagTableCounterBits(params->tagTableCounterBits),

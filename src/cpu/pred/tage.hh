@@ -54,12 +54,12 @@
 #include <vector>
 
 #include "base/types.hh"
+#include "cpu/pred/bpred_unit.hh"
 #include "cpu/pred/sat_counter.hh"
-#include "cpu/pred/statistical_corrector.hh"
 #include "params/TAGE.hh"
 
 
-class TAGE: public StatisticallyCorrectableBPredUnit
+class TAGE: public BPredUnit
 {
   public:
     TAGE(const TAGEParams *params);

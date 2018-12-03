@@ -192,6 +192,15 @@ class BPredUnit : public SimObject
 
     void dump();
 
+    virtual bool enableStatisticalCorrector(ThreadID tid,
+        const void* bp_history) const { return false; }
+
+    virtual int confidence(ThreadID tid, const void* bp_history) const
+        { return 0; }
+
+    virtual int statHash(ThreadID tid, int i, const void* bp_history) const
+        { return 0; }
+
   private:
     struct PredictorHistory {
         /**
