@@ -749,3 +749,12 @@ TAGE::statHash(ThreadID tid, int i, const void *bp_history) const
         return (gindex(tid, bi->branchPC, i) << 3) ^ ((bi->branchPC ^ i) & 7);
     return bindex(bi->branchPC);
 }
+
+int
+TAGE::position(ThreadID tid, const void* bp_history) const
+{
+    TageBranchInfo* bi = (TageBranchInfo*) bp_history;
+    if (bi->hitBank > 0)
+        return bi->hitBank + (bi->hitBankIndex << 4);
+    return bi->bimodalIndex << 4;
+}

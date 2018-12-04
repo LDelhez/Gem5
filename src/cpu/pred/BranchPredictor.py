@@ -151,5 +151,19 @@ class StatisticalCorrector(BranchPredictor):
 
     basePredictor = Param.BranchPredictor(TAGE(), "Base predictor")
 
+class IUM(BranchPredictor):
+    type = 'IUM'
+    cxx_class = 'IUM'
+    cxx_header = "cpu/pred/ium.hh"
+
+    logSize = Param.Unsigned(6, "Log size of the ium.")
+    basePredictor = Param.BranchPredictor(TAGE(), "Base predictor")
+
 class STAGE(StatisticalCorrector):
     pass
+
+class ITAGE(IUM):
+    pass
+
+class ISLTAGE(STAGE):
+    basePredictor = ITAGE()
