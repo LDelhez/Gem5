@@ -16,20 +16,25 @@ StatisticalCorrector::StatisticalCorrector(
 void
 StatisticalCorrector::uncondBranch(ThreadID tid, Addr br_pc, void* &bp_history)
 {
-    basePredictor->uncondBranch(tid, br_pc, bp_history);
+    SCBranchInfo* bi = (SCBranchInfo*) bp_history;
+    basePredictor->uncondBranch(tid, br_pc, bi->baseBranchInfo);
 }
 
 bool
 StatisticalCorrector::lookup(ThreadID tid, Addr branch_addr, void* &bp_history)
 {
-    bool prediction = basePredictor->lookup(tid, branch_addr, bp_history);
+    SCBranchInfo* bi = new SCBranchInfo();
+    bp_history = (void*) bi;
 
-    if (basePredictor->enableStatisticalCorrector(tid, bp_history)) {
+    bool prediction = basePredictor->lookup(tid, branch_addr,
+        bi->baseBranchInfo);
 
-        int confidence = basePredictor->confidence(tid, bp_history);
+    if (basePredictor->enableStatisticalCorrector(tid, bi->baseBranchInfo)) {
+
+        int confidence = basePredictor->confidence(tid, bi->baseBranchInfo);
 
         for (int i = 0; i < nTables; i++) {
-            int idx = basePredictor->statHash(tid, i, bp_history);
+            int idx = basePredictor->statHash(tid, i, bi->baseBranchInfo);
 
             idx = (idx << 1) + prediction;
             idx &= ((1 << logSize) - 1);
@@ -43,9 +48,11 @@ StatisticalCorrector::lookup(ThreadID tid, Addr branch_addr, void* &bp_history)
 
             prediction = correctedPrediction;
             statisticalCorrectorCorrected++;
+            bi->corrected = true;
         }
-
     }
+
+    bi->prediction = prediction;
 
     return prediction;
 }
@@ -54,7 +61,8 @@ void
 StatisticalCorrector::btbUpdate(ThreadID tid, Addr branch_addr,
     void* &bp_history)
 {
-    basePredictor->btbUpdate(tid, branch_addr, bp_history);
+    SCBranchInfo* bi = (SCBranchInfo*) bp_history;
+    basePredictor->btbUpdate(tid, branch_addr, bi->baseBranchInfo);
 }
 
 // Up-down saturating counter
@@ -99,15 +107,16 @@ void
 StatisticalCorrector::update(ThreadID tid, Addr branch_addr, bool taken,
     void *bp_history, bool squashed)
 {
+    SCBranchInfo* bi = (SCBranchInfo*) bp_history;
 
-    if (basePredictor->enableStatisticalCorrector(tid, bp_history)) {
+    if (basePredictor->enableStatisticalCorrector(tid, bi->baseBranchInfo)) {
 
-        int confidence = basePredictor->confidence(tid, bp_history);
+        int confidence = basePredictor->confidence(tid, bi->baseBranchInfo);
         bool prediction = taken;
 
         std::vector<int> indices(nTables);
         for (int i = 0; i < nTables; i++) {
-            int idx = basePredictor->statHash(tid, i, bp_history);
+            int idx = basePredictor->statHash(tid, i, bi->baseBranchInfo);
 
             idx = (idx << 1) + prediction;
             idx &= ((1 << logSize) - 1);
@@ -119,8 +128,6 @@ StatisticalCorrector::update(ThreadID tid, Addr branch_addr, bool taken,
         bool correctedPrediction = confidence >= 0;
         if (abs(confidence) >= useThreshold &&
             prediction != correctedPrediction) {
-
-            statisticalCorrectorCorrectedCorrectly++;
             prediction = correctedPrediction;
         }
 
@@ -135,19 +142,32 @@ StatisticalCorrector::update(ThreadID tid, Addr branch_addr, bool taken,
         }
     }
 
-    basePredictor->update(tid, branch_addr, taken, bp_history, squashed);
+    if (bi->corrected && taken == bi->prediction) {
+        statisticalCorrectorCorrectedCorrectly++;
+    }
+
+    basePredictor->update(tid, branch_addr, taken, bi->baseBranchInfo,
+        squashed);
+
+    if (!squashed) {
+        delete bi;
+    }
 }
 
 void
 StatisticalCorrector::squash(ThreadID tid, void *bp_history)
 {
-    basePredictor->squash(tid, bp_history);
+    SCBranchInfo* bi = (SCBranchInfo*) bp_history;
+    basePredictor->squash(tid, bi->baseBranchInfo);
+
+    delete bi;
 }
 
 unsigned
 StatisticalCorrector::getGHR(ThreadID tid, void *bp_history) const
 {
-    return basePredictor->getGHR(tid, bp_history);
+    SCBranchInfo* bi = (SCBranchInfo*) bp_history;
+    return basePredictor->getGHR(tid, bi->baseBranchInfo);
 }
 
 void

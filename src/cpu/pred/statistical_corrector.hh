@@ -24,6 +24,16 @@ public:
 
 private:
 
+    struct SCBranchInfo
+    {
+        bool corrected;
+        bool prediction;
+
+        void* baseBranchInfo;
+
+        SCBranchInfo() : corrected(false) {}
+    };
+
     BPredUnit* basePredictor;
 
     const uint8_t logSize = 12;
