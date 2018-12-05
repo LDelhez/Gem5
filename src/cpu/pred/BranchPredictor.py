@@ -151,6 +151,21 @@ class StatisticalCorrector(BranchPredictor):
 
     basePredictor = Param.BranchPredictor(TAGE(), "Base predictor")
 
+
+class LStatisticalCorrector(BranchPredictor):
+    type = 'LStatisticalCorrector'
+    cxx_class = 'LStatisticalCorrector'
+    cxx_header = "cpu/pred/local_statistical_corrector.hh"
+
+    numHistories = Param.Unsigned(64, "Number of local histories")
+    numTables = Param.Unsigned(5, "Number of tables")
+    entryBits = Param.Unsigned(6, "Number of bits per entry")
+    localHistoryLengths = VectorParam.Unsigned(
+        [0, 4, 10, 17, 31], "Lengths of the local histories")
+    logSize = Param.Unsigned(10, "Log size of the corrector")
+
+    basePredictor = Param.BranchPredictor(TAGE(), "Base predictor")
+
 class IUM(BranchPredictor):
     type = 'IUM'
     cxx_class = 'IUM'
@@ -166,4 +181,7 @@ class ITAGE(IUM):
     pass
 
 class ISLTAGE(STAGE):
+    basePredictor = ITAGE()
+
+class TAGELSC(LStatisticalCorrector):
     basePredictor = ITAGE()
