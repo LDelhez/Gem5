@@ -51,6 +51,7 @@ class BranchPredictor(SimObject):
     indirectTagSize = Param.Unsigned(16, "Indirect target cache tag bits")
     indirectPathLength = Param.Unsigned(3,
         "Previous indirect targets to use for path history")
+    storage = Param.Unsigned(0, "Total storage")
 
 class LocalBP(BranchPredictor):
     type = 'LocalBP'
@@ -147,7 +148,7 @@ class StatisticalCorrector(BranchPredictor):
 
     logSize = Param.Unsigned(12, "Log size of the corrector")
     numTables = Param.Unsigned(5, "Number of tables")
-    tableEntryBits = Param.Unsigned(5, "Number of bits per entry")
+    tableEntryBits = Param.Unsigned(6, "Number of bits per entry")
 
     basePredictor = Param.BranchPredictor(TAGE(), "Base predictor")
 
@@ -185,3 +186,19 @@ class ISLTAGE(STAGE):
 
 class TAGELSC(LStatisticalCorrector):
     basePredictor = ITAGE()
+
+class LoopPredictor(BranchPredictor):
+    type = 'LoopPredictor'
+    cxx_class = 'LoopPredictor'
+    cxx_header = "cpu/pred/loop_predictor.hh"
+
+    logSizeLoopPred = Param.Unsigned(8, "Log size of the loop predictor")
+    withLoopBits = Param.Unsigned(7, "Size of the WITHLOOP counter")
+    loopTableAgeBits = Param.Unsigned(8, "Number of age bits per loop entry")
+    loopTableConfidenceBits = Param.Unsigned(2,
+            "Number of confidence bits per loop entry")
+    loopTableTagBits = Param.Unsigned(14, "Number of tag bits per loop entry")
+    loopTableIterBits = Param.Unsigned(14, "Nuber of iteration bits per loop")
+    logLoopTableAssoc = Param.Unsigned(2, "Log loop predictor associativity")
+
+    basePredictor = Param.BranchPredictor(TAGE(), "Base predictor")

@@ -138,3 +138,10 @@ IUM::statHash(ThreadID tid, int i, const void* bp_history) const
     IUMBranchInfo* bi = (IUMBranchInfo*) bp_history;
     return basePredictor->statHash(tid, i, bi->baseBranchInfo);
 }
+
+int
+IUM::position(ThreadID tid, const void* bp_history) const
+{
+    IUMBranchInfo* bi = (IUMBranchInfo*) bp_history;
+    return basePredictor->position(tid, bi->baseBranchInfo);
+}

@@ -27,6 +27,8 @@ public:
     virtual int statHash(ThreadID tid, int i, const void* bp_history)
         const override;
 
+    virtual int position(ThreadID tid, const void* bp_history) const override;
+
     virtual void regStats() override;
 
 private:
