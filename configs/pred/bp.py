@@ -42,8 +42,8 @@ def tage8_(bp, n):
 
 def tage13_(bp, n):
     tagTableTagWidths = [0, 7, 7, 8, 8, 9, 10, 11, 12, 12, 13, 14, 15]
-    logTagTableSizes =
-        [n-4, n-8, n-8, n-7, n-7, n-7, n-7, n-8, n-8, n-8, n-8, n-9, n-9]
+    logTagTableSizes = [n-4,
+        n-8, n-8, n-7, n-7, n-7, n-7, n-8, n-8, n-8, n-8, n-9, n-9]
     tagTableCounterBits = 3
     tagTableUBits = 2
 
@@ -63,11 +63,10 @@ def tage13_(bp, n):
 
 def tage16_(bp, n):
     n -= 2
-    tagTableTagWidths =
-        [0, 8, 8, 11, 11, 11, 11, 11, 13, 13, 13, 13, 13, 13, 14, 14]
-    logTagTableSizes =
-        [n-4, n-7, n-7, n-5, n-5, n-5, n-5, n-5, n-6, n-6, n-6, n-6,
-            n-6, n-6, n-9, n-9]
+    tagTableTagWidths = [0, 8, 8, 11, 11, 11, 11, 11, 13, 13, 13, 13, 13,
+        13, 14, 14]
+    logTagTableSizes = [n-4, n-7, n-7, n-5, n-5, n-5, n-5, n-5, n-6, n-6, n-6,
+        n-6, n-6, n-6, n-9, n-9]
     tagTableCounterBits = 3
     tagTableUBits = 1
 
