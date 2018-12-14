@@ -1,3 +1,5 @@
+// From André Seznec's original implementation.
+// https://team.inria.fr/alf/members/andre-seznec/branch-prediction-research/
 
 #ifndef __CPU_PRED_LOCAL_STATISTICAL_CORRECTOR_HH__
 #define __CPU_PRED_LOCAL_STATISTICAL_CORRECTOR_HH__

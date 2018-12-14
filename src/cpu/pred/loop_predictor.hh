@@ -1,3 +1,6 @@
+// From André Seznec's original implementation.
+// https://team.inria.fr/alf/members/andre-seznec/branch-prediction-research/
+
 #ifndef __CPU_PRED_LOOP_PREDICTOR
 #define __CPU_PRED_LOOP_PREDICTOR
 

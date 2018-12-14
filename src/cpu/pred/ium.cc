@@ -1,3 +1,5 @@
+// From André Seznec's original implementation.
+// https://team.inria.fr/alf/members/andre-seznec/branch-prediction-research/
 
 #include "cpu/pred/ium.hh"
 
