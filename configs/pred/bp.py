@@ -124,7 +124,7 @@ def ltage5(n):
 def ltage8(n):
     bp = LoopPredictor()
     (bp.basePredictor,s) = tage8(n)
-    (bp,s) = ltage_(bp,n)
+    (bp,s) = ltage_(bp,n,s)
     return (bp, int(s))
 
 def ltage13(n):
@@ -196,7 +196,7 @@ def sltage16(n):
     return ltage_(bp,n,s)
 
 def itage_(bp,n,s1):
-    logSize = n-19+6
+    logSize = 6 # no scaling
     bp.logSize = logSize
 
     s1 += 2**logSize * 20
